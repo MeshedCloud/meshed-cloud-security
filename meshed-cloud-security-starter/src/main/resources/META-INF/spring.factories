@@ -1,0 +1,6 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+cn.meshed.cloud.security.config.AntPathMatcherConfig,\
+cn.meshed.cloud.security.config.SecurityConfig,\
+cn.meshed.cloud.security.config.WebConfig,\
+cn.meshed.cloud.security.DevelopMockService,\
+cn.meshed.cloud.security.OperatorInterceptor
