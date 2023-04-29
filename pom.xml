@@ -7,10 +7,11 @@
     <groupId>cn.meshed.cloud</groupId>
     <artifactId>meshed-cloud-security</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <modules>
         <module>meshed-cloud-security-starter</module>
         <module>meshed-cloud-security-token-starter</module>
+        <module>meshed-cloud-security-oauth2-client-starter</module>
     </modules>
 
     <properties>

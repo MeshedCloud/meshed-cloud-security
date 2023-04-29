@@ -1,0 +1,6 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+cn.meshed.cloud.oauth2.ClientRegistrationRepositoryConfig,\
+cn.meshed.cloud.oauth2.ConsumerOAuth2AccessTokenResponseClient,\
+cn.meshed.cloud.oauth2.ConsumerOAuth2UserService,\
+cn.meshed.cloud.oauth2.RestTemplateConfig,\
+cn.meshed.cloud.oauth2.Oauth2ClientSecurityConfig

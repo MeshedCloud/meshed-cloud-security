@@ -14,7 +14,7 @@ import java.util.Set;
  */
 @Data
 @RefreshScope
-@ConfigurationProperties("service.security")
+@ConfigurationProperties(prefix = "service.security")
 public class SecurityConfig {
 
     private Set<String> excludeUris;
