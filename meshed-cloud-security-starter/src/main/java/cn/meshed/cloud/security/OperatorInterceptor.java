@@ -8,6 +8,7 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -32,6 +33,8 @@ public class OperatorInterceptor implements HandlerInterceptor {
     private final AccessTokenService accessTokenService;
     private final AntPathMatcher antPathMatcher;
     private final DevelopMockService developMockService;
+    @Value("${server.servlet.context-path:}")
+    private String contextPath;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -73,19 +76,24 @@ public class OperatorInterceptor implements HandlerInterceptor {
             return false;
         }
         String requestUri = request.getRequestURI();
-        log.debug("{} ", requestUri);
-        return excludeUris.stream().anyMatch(excludeUri -> antPathMatcher.match(excludeUri, requestUri));
+        //去除上下文
+        if (StringUtils.isNotBlank(contextPath) && requestUri.startsWith(contextPath)) {
+            requestUri = requestUri.substring(contextPath.length());
+        }
+
+        String finalRequestUri = requestUri;
+        return excludeUris.stream().anyMatch(excludeUri -> antPathMatcher.match(excludeUri, finalRequestUri));
     }
 
-    public Operator parsingOperator(String data){
+    public Operator parsingOperator(String data) {
         JSONObject jsonObject = JSONObject.parseObject(data);
         //目前仅存在有用户信息和无用户信息两种签名
-        if (jsonObject.size() == 0){
+        if (jsonObject.size() == 0) {
             return null;
         }
         Operator operator = new Operator(jsonObject.getString("id"), jsonObject.getString("realName"));
-        Set<String> grantedAuthority = getSet(jsonObject,"grantedAuthority");
-        Set<String> grantedRole = getSet(jsonObject,"grantedRole");
+        Set<String> grantedAuthority = getSet(jsonObject, "grantedAuthority");
+        Set<String> grantedRole = getSet(jsonObject, "grantedRole");
 
         operator.setAccess(grantedAuthority);
         operator.setRoles(grantedRole);
@@ -95,7 +103,7 @@ public class OperatorInterceptor implements HandlerInterceptor {
 
     public Set<String> getSet(JSONObject jsonObject, String key) {
         String str = jsonObject.getString(key);
-        if (StringUtils.isNotBlank(str)){
+        if (StringUtils.isNotBlank(str)) {
             return JSONObject.parseObject(str, Set.class);
         }
         return Collections.emptySet();
