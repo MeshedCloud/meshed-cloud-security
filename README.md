@@ -14,8 +14,7 @@ mvn clean install org.apache.maven.plugins:maven-deploy-plugin:2.8:deploy -Dskip
 
 ## 导航
 
-### Security Starter
-微服务安全依赖
+### 微服务安全
 
 ```xml
 <dependency>
@@ -24,11 +23,26 @@ mvn clean install org.apache.maven.plugins:maven-deploy-plugin:2.8:deploy -Dskip
     <version>1.0.0-SNAPSHOT</version>
 </dependency>
 ```
+配置，提供开发是模拟用户生成，产线环境下mock无效
+```yaml
+service:
+  security:
+    exclude-uris:
+      - /actuator
+      - /actuator/**
+      - /doc.html
+      - /v3/**
+    mock:
+      enable: true
+      user-id: 1
+      username: name
+      access: 6
+      roles: RD:ADMIN
+```
 
-### Security Token Starter
+### 内网令牌
 
-微服务安全口令依赖
-
+主要网关和security引用，生成内网安全令牌
 ```xml
 <dependency>
     <groupId>cn.meshed.cloud</groupId>
@@ -37,18 +51,49 @@ mvn clean install org.apache.maven.plugins:maven-deploy-plugin:2.8:deploy -Dskip
 </dependency>
 ```
 
-## 软件依赖
+密钥配置，微服务一般不用独立配置，归属到通用配置
+```yaml
+service:
+  security:
+    secret: cAu9eYo3N4U8HnJeeSxoWjp3Wd1O6XmSNH2RBwbbUkrHJz4Cs0fnJyxD65wlFAuTfAnTJljs3TRa2LOy51gS9Gczt84oivybxajYvN9BpiF2TSbfXLmleSn6SAGX8efW
+```
 
-| 框架                                                                                                    | 描述                             | 官网                                                             |
-|-------------------------------------------------------------------------------------------------------|--------------------------------|----------------------------------------------------------------|
-| [Spring Boot](https://spring.io/projects/spring-boot) 2.6.3 [Apache-2.0]                              | 开源框架                           | https://spring.io/projects/spring-boot                         |
-| [Spring Cloud](https://spring.io/projects/spring-cloud) 2021.0.1 [Apache-2.0]                         | 分布式微服务架构                       | https://spring.io/projects/spring-cloud                        |
-| [Spring Cloud Alibaba](https://spring.io/projects/spring-cloud-alibaba) 2021.0.1.0 [Apache-2.0]       | 微服务阿里方案                        | https://spring.io/projects/spring-cloud-alibaba                |
-| [Cola](https://github.com/alibaba/COLA) 4.3.1 [LGPL-2.1]                                              | 应用架构 (DDD 领域驱动设计实现方案)          | https://github.com/alibaba/COLA                                |
-| [Flowable](https://github.com/flowable/flowable-engine) 6.7.2 [Apache-2.0]                            | 流程引擎                           | https://github.com/flowable/flowable-engine                    |
-| [workflow-bpmn-modeler-antdv](https://github.com/Vincent-Vic/workflow-bpmn-modeler-antdv) 1.0.7 [MIT] | 流程设计器                          | https://github.com/Vincent-Vic/workflow-bpmn-modeler-antdv     |
-| [antd design pro](https://pro.ant.design/zh-CN/) 3.0.2 [MIT]                                          | 中台前端                           | https://pro.ant.design/zh-CN/                                  |
-|                                                                                                       |                                |                                                                |
+### OAUTH2客户端
+
+```xml
+<dependency>
+    <groupId>cn.meshed.cloud</groupId>
+    <artifactId>meshed-cloud-security-oauth2-client-starter</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+</dependency>
+```
+
+配置
+
+```yaml
+oauth2:
+  host: http://localhost:7989/iam
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          default:
+            clientId: 6c6a53c614944917bebff88b439eb85f
+            clientSecret: 914dbcdf96a748c98b1259b8c24b0913
+            authorization-grant-type: code
+            client-authentication-method: client_secret_post
+            redirect-uri: http://localhost:9200/monitor/login/oauth2/code/default
+            client-name: 统一身份中心
+            scope:
+              - userinfo
+        provider:
+          default:
+            authorization-uri: ${oauth2.host}/oauth2/authorize
+            token-uri: ${oauth2.host}/oauth2/token
+            user-info-uri: ${oauth2.host}/current/userinfo
+            user-name-attribute: name
+```
 
 
 
