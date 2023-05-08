@@ -10,6 +10,7 @@ mvn clean install org.apache.maven.plugins:maven-deploy-plugin:2.8:deploy -Dskip
 ## 使用
 
 主要网关和security引用，生成内网安全令牌
+
 ```xml
 <dependency>
     <groupId>cn.meshed.cloud</groupId>
@@ -26,3 +27,4 @@ service:
   security:
     secret: cAu9eYo3N4U8HnJeeSxoWjp3Wd1O6XmSNH2RBwbbUkrHJz4Cs0fnJyxD65wlFAuTfAnTJljs3TRa2LOy51gS9Gczt84oivybxajYvN9BpiF2TSbfXLmleSn6SAGX8efW
 ```
+
